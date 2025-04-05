@@ -9,8 +9,101 @@ import { Loader2 } from "lucide-react"
 import "@/app/globals.css"
 import { useState } from "react"
 
+interface Strategy {
+  id: string
+  name: string
+  description: string
+  network: string
+  icon: string
+  apy: number
+  histApy: number
+  riskLevel: number
+  available: number
+  holdings: number
+  userDeposit: number
+}
+
+const initialStrategies: Strategy[] = [
+  {
+    id: "1",
+    name: "Sky Rewards USDS Compo...",
+    description: "USDS Stablecoin",
+    network: "Ethereum",
+    icon: "$",
+    apy: 6.03,
+    histApy: 8.9,
+    riskLevel: 2,
+    available: 0,
+    holdings: 11.13,
+    userDeposit: 1000,
+  },
+  {
+    id: "2",
+    name: "USDS",
+    description: "USDS Stablecoin",
+    network: "Ethereum",
+    icon: "$",
+    apy: 6.44,
+    histApy: 6.63,
+    riskLevel: 2,
+    available: 50000,
+    holdings: 9.19,
+    userDeposit: 0,
+  },
+  {
+    id: "3",
+    name: "USDC",
+    description: "USD Coin",
+    network: "Ethereum",
+    icon: "$",
+    apy: 4.45,
+    histApy: 4.35,
+    riskLevel: 1,
+    available: 100000,
+    holdings: 6.91,
+    userDeposit: 500,
+  },
+  {
+    id: "4",
+    name: "USDT",
+    description: "Tether USD",
+    network: "Ethereum",
+    icon: "$",
+    apy: 3.27,
+    histApy: 5.32,
+    riskLevel: 2,
+    available: 0,
+    holdings: 5.43,
+    userDeposit: 0,
+  },
+  {
+    id: "5",
+    name: "DAI-2",
+    description: "Dai Stablecoin",
+    network: "Ethereum",
+    icon: "$",
+    apy: 6.2,
+    histApy: 14.01,
+    riskLevel: 3,
+    available: 20000,
+    holdings: 1.22,
+    userDeposit: 0,
+  },
+]
+
 export default function StrategiesPage() {
   const { isConnected, isConnecting, connect, address } = useWallet()
+  const [strategiesData, setStrategiesData] = useState<Strategy[]>(initialStrategies);
+
+  const updateStrategy = (strategyId: string, changes: Partial<Strategy>) => {
+    setStrategiesData(prevStrategies => 
+      prevStrategies.map(strategy => 
+        strategy.id === strategyId 
+          ? { ...strategy, ...changes } 
+          : strategy
+      )
+    );
+  };
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -106,33 +199,61 @@ export default function StrategiesPage() {
       </div>
 
       <div className="space-y-4">
-        {strategies.map((strategy) => (
-          <StrategyCard key={strategy.id} strategy={strategy} />
+        {strategiesData.map((strategy) => (
+          <StrategyCard 
+            key={strategy.id} 
+            strategy={strategy} 
+            onUpdateStrategy={updateStrategy}
+          />
         ))}
       </div>
     </div>
   )
 }
 
-function StrategyCard({ strategy }: { strategy: Strategy }) {
+function StrategyCard({ strategy, onUpdateStrategy }: { 
+  strategy: Strategy, 
+  onUpdateStrategy: (strategyId: string, changes: Partial<Strategy>) => void 
+}) {
   const [isDepositing, setIsDepositing] = useState(false)
   const [isWithdrawing, setIsWithdrawing] = useState(false)
   const { isConnected } = useWallet()
 
+  const canDeposit = strategy.available > 0;
+  const canWithdraw = strategy.userDeposit > 0;
+
   const handleDeposit = () => {
+    if (!canDeposit) return; 
     setIsDepositing(true)
+    
+    // Simulate deposit transaction
+    const depositAmount = 100; // Mock deposit amount
     setTimeout(() => {
-      alert(`Deposited into ${strategy.name}`)
-      setIsDepositing(false)
-    }, 2000)
+      alert(`Deposited ${depositAmount} into ${strategy.name}`);
+      // Update the strategy state
+      onUpdateStrategy(strategy.id, {
+        userDeposit: strategy.userDeposit + depositAmount,
+        available: strategy.available - depositAmount // Decrease available capacity
+      });
+      setIsDepositing(false);
+    }, 2000);
   }
 
   const handleWithdraw = () => {
+    if (!canWithdraw) return; 
     setIsWithdrawing(true)
+    
+    // Simulate withdraw transaction
+    const withdrawAmount = strategy.userDeposit; // Withdraw full amount
     setTimeout(() => {
-      alert(`Withdrawn from ${strategy.name}`)
-      setIsWithdrawing(false)
-    }, 2000)
+      alert(`Withdrawn ${withdrawAmount} from ${strategy.name}`);
+      // Update the strategy state
+      onUpdateStrategy(strategy.id, {
+        userDeposit: 0, // User deposit becomes 0
+        available: strategy.available + withdrawAmount // Increase available capacity
+      });
+      setIsWithdrawing(false);
+    }, 2000);
   }
 
   return (
@@ -182,10 +303,10 @@ function StrategyCard({ strategy }: { strategy: Strategy }) {
           </div>
           <div className="flex gap-2 ml-4 w-1/4 justify-end">
             <Button
-              className="bg-green-600 hover:bg-green-700"
+              className={`bg-green-600 hover:bg-green-700 ${!canDeposit ? 'opacity-50 cursor-not-allowed' : ''}`}
               size="sm"
               onClick={handleDeposit}
-              disabled={!isConnected || isDepositing || isWithdrawing}
+              disabled={!isConnected || !canDeposit || isDepositing || isWithdrawing}
             >
               {isDepositing ? (
                 <>
@@ -197,10 +318,10 @@ function StrategyCard({ strategy }: { strategy: Strategy }) {
               )}
             </Button>
             <Button
-              className="bg-red-600 hover:bg-red-700"
+              className={`bg-red-600 hover:bg-red-700 ${!canWithdraw ? 'opacity-50 cursor-not-allowed' : ''}`}
               size="sm"
               onClick={handleWithdraw}
-              disabled={!isConnected || isWithdrawing || isDepositing}
+              disabled={!isConnected || !canWithdraw || isWithdrawing || isDepositing}
             >
               {isWithdrawing ? (
                 <>
@@ -216,80 +337,4 @@ function StrategyCard({ strategy }: { strategy: Strategy }) {
       </CardContent>
     </Card>
   )
-}
-
-interface Strategy {
-  id: string
-  name: string
-  description: string
-  network: string
-  icon: string
-  apy: number
-  histApy: number
-  riskLevel: number
-  available: number
-  holdings: number
-}
-
-const strategies: Strategy[] = [
-  {
-    id: "1",
-    name: "Sky USDS Compo...",
-    description: "USDS Stablecoin",
-    network: "Ethereum",
-    icon: "$",
-    apy: 6.03,
-    histApy: 8.9,
-    riskLevel: 2,
-    available: 0,
-    holdings: 11.13,
-  },
-  {
-    id: "2",
-    name: "USDS",
-    description: "USDS Stablecoin",
-    network: "Ethereum",
-    icon: "$",
-    apy: 6.44,
-    histApy: 6.63,
-    riskLevel: 2,
-    available: 0,
-    holdings: 9.19,
-  },
-  {
-    id: "3",
-    name: "USDC",
-    description: "USD Coin",
-    network: "Ethereum",
-    icon: "$",
-    apy: 4.45,
-    histApy: 4.35,
-    riskLevel: 1,
-    available: 0,
-    holdings: 6.91,
-  },
-  {
-    id: "4",
-    name: "USDT",
-    description: "Tether USD",
-    network: "Ethereum",
-    icon: "$",
-    apy: 3.27,
-    histApy: 5.32,
-    riskLevel: 2,
-    available: 0,
-    holdings: 5.43,
-  },
-  {
-    id: "5",
-    name: "DAI-2",
-    description: "Dai Stablecoin",
-    network: "Ethereum",
-    icon: "$",
-    apy: 6.2,
-    histApy: 14.01,
-    riskLevel: 3,
-    available: 0,
-    holdings: 1.22,
-  },
-] 
+} 
