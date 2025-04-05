@@ -223,34 +223,62 @@ function StrategyCard({ strategy, onUpdateStrategy }: {
   const canWithdraw = strategy.userDeposit > 0;
 
   const handleDeposit = () => {
-    if (!canDeposit) return; 
-    setIsDepositing(true)
+    if (!canDeposit || !isConnected) return; 
+
+    const amountStr = prompt(`Enter amount to deposit into ${strategy.name} (Available: ${strategy.available})`);
+    if (amountStr === null) return; // User cancelled
+
+    const depositAmount = parseFloat(amountStr);
+
+    if (isNaN(depositAmount) || depositAmount <= 0) {
+      alert("Invalid deposit amount.");
+      return;
+    }
+
+    if (depositAmount > strategy.available) {
+      alert("Deposit amount exceeds available capacity.");
+      return;
+    }
+
+    setIsDepositing(true);
     
     // Simulate deposit transaction
-    const depositAmount = 100; // Mock deposit amount
     setTimeout(() => {
       alert(`Deposited ${depositAmount} into ${strategy.name}`);
-      // Update the strategy state
       onUpdateStrategy(strategy.id, {
         userDeposit: strategy.userDeposit + depositAmount,
-        available: strategy.available - depositAmount // Decrease available capacity
+        available: strategy.available - depositAmount
       });
       setIsDepositing(false);
     }, 2000);
   }
 
   const handleWithdraw = () => {
-    if (!canWithdraw) return; 
-    setIsWithdrawing(true)
+    if (!canWithdraw || !isConnected) return; 
+
+    const amountStr = prompt(`Enter amount to withdraw from ${strategy.name} (Deposited: ${strategy.userDeposit})`);
+    if (amountStr === null) return; // User cancelled
+
+    const withdrawAmount = parseFloat(amountStr);
+
+    if (isNaN(withdrawAmount) || withdrawAmount <= 0) {
+      alert("Invalid withdrawal amount.");
+      return;
+    }
+
+    if (withdrawAmount > strategy.userDeposit) {
+      alert("Withdrawal amount exceeds your deposited balance.");
+      return;
+    }
+
+    setIsWithdrawing(true);
     
     // Simulate withdraw transaction
-    const withdrawAmount = strategy.userDeposit; // Withdraw full amount
     setTimeout(() => {
       alert(`Withdrawn ${withdrawAmount} from ${strategy.name}`);
-      // Update the strategy state
       onUpdateStrategy(strategy.id, {
-        userDeposit: 0, // User deposit becomes 0
-        available: strategy.available + withdrawAmount // Increase available capacity
+        userDeposit: strategy.userDeposit - withdrawAmount,
+        available: strategy.available + withdrawAmount
       });
       setIsWithdrawing(false);
     }, 2000);
@@ -293,8 +321,8 @@ function StrategyCard({ strategy, onUpdateStrategy }: {
               <p className="text-xs text-gray-400 mt-1">Risk Level</p>
             </div>
             <div>
-              <p className="font-bold">{strategy.available}</p>
-              <p className="text-xs text-gray-400">Available</p>
+              <p className="font-bold">{strategy.userDeposit}</p>
+              <p className="text-xs text-gray-400">Your Deposit</p>
             </div>
             <div>
               <p className="font-bold">${strategy.holdings}M</p>
