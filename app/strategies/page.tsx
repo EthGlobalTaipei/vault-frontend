@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useWallet } from "@/hooks/use-wallet"
 import { Loader2 } from "lucide-react"
 import "@/app/globals.css"
+import { useState } from "react"
 
 export default function StrategiesPage() {
   const { isConnected, isConnecting, connect, address } = useWallet()
@@ -114,11 +115,31 @@ export default function StrategiesPage() {
 }
 
 function StrategyCard({ strategy }: { strategy: Strategy }) {
+  const [isDepositing, setIsDepositing] = useState(false)
+  const [isWithdrawing, setIsWithdrawing] = useState(false)
+  const { isConnected } = useWallet()
+
+  const handleDeposit = () => {
+    setIsDepositing(true)
+    setTimeout(() => {
+      alert(`Deposited into ${strategy.name}`)
+      setIsDepositing(false)
+    }, 2000)
+  }
+
+  const handleWithdraw = () => {
+    setIsWithdrawing(true)
+    setTimeout(() => {
+      alert(`Withdrawn from ${strategy.name}`)
+      setIsWithdrawing(false)
+    }, 2000)
+  }
+
   return (
     <Card className="bg-[#0A1029] border-gray-800">
       <CardContent className="p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
+        <div className="flex items-center justify-between w-full">
+          <div className="flex items-center w-1/4">
             <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-xl font-bold mr-4">
               {strategy.icon}
             </div>
@@ -132,7 +153,7 @@ function StrategyCard({ strategy }: { strategy: Strategy }) {
               </div>
             </div>
           </div>
-          <div className="grid grid-cols-5 gap-8 text-center">
+          <div className="grid grid-cols-5 gap-8 text-center w-1/2">
             <div>
               <p className="text-pink-500 font-bold">{strategy.apy}%</p>
               <p className="text-xs text-gray-400">Est. APY</p>
@@ -159,6 +180,38 @@ function StrategyCard({ strategy }: { strategy: Strategy }) {
               <p className="text-xs text-gray-400">Holdings</p>
             </div>
           </div>
+          <div className="flex gap-2 ml-4 w-1/4 justify-end">
+            <Button
+              className="bg-green-600 hover:bg-green-700"
+              size="sm"
+              onClick={handleDeposit}
+              disabled={!isConnected || isDepositing || isWithdrawing}
+            >
+              {isDepositing ? (
+                <>
+                  <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+                  Depositing...
+                </>
+              ) : (
+                "Deposit"
+              )}
+            </Button>
+            <Button
+              className="bg-red-600 hover:bg-red-700"
+              size="sm"
+              onClick={handleWithdraw}
+              disabled={!isConnected || isWithdrawing || isDepositing}
+            >
+              {isWithdrawing ? (
+                <>
+                  <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+                  Withdrawing...
+                </>
+              ) : (
+                "Withdraw"
+              )}
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>
@@ -181,7 +234,7 @@ interface Strategy {
 const strategies: Strategy[] = [
   {
     id: "1",
-    name: "Sky Rewards USDS Compo...",
+    name: "Sky USDS Compo...",
     description: "USDS Stablecoin",
     network: "Ethereum",
     icon: "$",
