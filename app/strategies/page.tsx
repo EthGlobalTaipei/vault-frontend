@@ -27,8 +27,8 @@ interface Strategy {
 const initialStrategies: Strategy[] = [
   {
     id: "1",
-    name: "Multi-Chain Yield Vault",
-    description: "Testnet Cross-Chain Stablecoin Vault",
+    name: "USDC Vault",
+    description: "USDC Vault for maximum yield",
     network: "Multi-Chain",
     icon: "$",
     apy: 6.03,
@@ -92,6 +92,13 @@ const initialStrategies: Strategy[] = [
   },
 ]
 
+// Vault contract addresses for reference
+const VAULT_ADDRESSES = {
+  ROOTSTOCK: "0x2E30A7809ACa616751F00FF46A0B4E9761aB71E2",
+  CELLO: "0xd4756D307DF8509352F20Bc3A25a7B987F37bdE0",
+  SAGA: "0x814b2fa4018cd54b1BbD8662a8B53FeB4eD24D7D"
+};
+
 export default function StrategiesPage() {
   const { isConnected, isConnecting, connect, address } = useWallet()
   const [strategiesData, setStrategiesData] = useState<Strategy[]>(initialStrategies);
@@ -154,8 +161,7 @@ export default function StrategiesPage() {
         <h3 className="text-lg font-semibold mb-2">Important Notice</h3>
         <p>
           Currently, only the Multi-Chain Yield Vault (ID:1) is active for deposits and withdrawals.
-          This vault is deployed on Celo Testnet (Alfajores), Rootstock Testnet, and Saga Chainlet (forge-2743785636557000-1).
-          Other strategies are for demonstration purposes only.
+          This vault is deployed on Celo Testnet (Alfajores), Rootstock Testnet, and Saga Chainlet.
         </p>
       </div>
 
@@ -337,7 +343,7 @@ export default function StrategiesPage() {
                 {strategy.id === "1" && (
                   <div className="mb-4 text-sm">
                     <p className="text-foreground/70 mb-2">Available Networks:</p>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-2 mb-3">
                       <span className="px-2 py-1 bg-background/40 rounded text-xs">Celo Testnet</span>
                       <span className="px-2 py-1 bg-background/40 rounded text-xs">Rootstock Testnet</span>
                       <span className="px-2 py-1 bg-background/40 rounded text-xs">Saga Chainlet</span>
@@ -353,22 +359,17 @@ export default function StrategiesPage() {
                   <Button 
                     className="animated-button bg-transparent border border-primary/30 hover:bg-primary/10 text-foreground"
                     onClick={() => handleOpenModal(strategy, "deposit")}
-                    disabled={strategy.available <= 0}
+                    disabled={strategy.id !== "1" || strategy.available <= 0}
                   >
                     Deposit
                   </Button>
                   <Button 
                     className="animated-button bg-transparent border border-primary/30 hover:bg-primary/10 text-foreground"
                     onClick={() => handleOpenModal(strategy, "withdraw")}
-                    disabled={strategy.userDeposit <= 0}
+                    disabled={strategy.id !== "1" || strategy.userDeposit <= 0}
                   >
                     Withdraw
                   </Button>
-                  {strategy.id !== "1" && (
-                    <div className="col-span-2 mt-2 text-center text-xs text-muted-foreground">
-                      This strategy is for demonstration only
-                    </div>
-                  )}
                 </div>
               </div>
             </CardContent>

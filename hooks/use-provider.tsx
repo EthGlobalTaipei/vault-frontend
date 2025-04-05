@@ -56,7 +56,7 @@ export const CHAIN_INFO: Record<number, ChainInfo> = {
     blockExplorerUrls: ['https://explorer.testnet.rsk.co']
   },
   [ChainId.SAGA]: {
-    chainId: `0x${ChainId.SAGA.toString(16)}`,
+    chainId: `0x${BigInt(ChainId.SAGA).toString(16)}`,
     chainName: 'Saga Chainlet forge-2743785636557000-1',
     nativeCurrency: {
       name: 'SAGA',
@@ -139,11 +139,19 @@ export function useProvider() {
       // Convert decimal chain ID to hexadecimal (required by MetaMask)
       const chainIdHex = `0x${targetChainId.toString(16)}`
       
+      // Handle the Saga chain ID specifically which is very large
+      const isSagaChain = targetChainId === ChainId.SAGA
+      const sagaChainIdHex = isSagaChain ? 
+        `0x${BigInt(targetChainId).toString(16)}` : 
+        chainIdHex
+      
+      const finalChainIdHex = isSagaChain ? sagaChainIdHex : chainIdHex
+      
       try {
         // First try to switch to the network
         await window.ethereum.request({
           method: "wallet_switchEthereumChain",
-          params: [{ chainId: chainIdHex }],
+          params: [{ chainId: finalChainIdHex }],
         })
         return true
       } catch (switchError: any) {

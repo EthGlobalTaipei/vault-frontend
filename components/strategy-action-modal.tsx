@@ -41,6 +41,13 @@ const CHAIN_ID_TO_NETWORK: Record<number, string> = {
   [ChainId.SAGA]: "Saga"
 };
 
+// Map ChainId to vault addresses for reference and UI display
+const CHAIN_ID_TO_VAULT_ADDRESS: Record<number, string> = {
+  [ChainId.CELO]: "0xd4756D307DF8509352F20Bc3A25a7B987F37bdE0",
+  [ChainId.ROOTSTOCK]: "0x2E30A7809ACa616751F00FF46A0B4E9761aB71E2",
+  [ChainId.SAGA]: "0x814b2fa4018cd54b1BbD8662a8B53FeB4eD24D7D"
+};
+
 interface StrategyActionModalProps {
   isOpen: boolean
   onClose: () => void
@@ -177,12 +184,12 @@ export function StrategyActionModal({ isOpen, onClose, strategy, action }: Strat
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>
-            {action === "deposit" ? "Deposit to" : "Withdraw from"} ID:1 Vault
+            {action === "deposit" ? "Deposit to" : "Withdraw from"} USDC Vault
           </DialogTitle>
           <DialogDescription>
             {action === "deposit" 
-              ? "Enter the amount you want to deposit into this vault" 
-              : "Enter the amount you want to withdraw from this vault"}
+              ? "Enter the amount of USDC you want to deposit into this vault" 
+              : "Enter the amount of USDC you want to withdraw from this vault"}
           </DialogDescription>
         </DialogHeader>
 
@@ -200,9 +207,9 @@ export function StrategyActionModal({ isOpen, onClose, strategy, action }: Strat
               <SelectValue placeholder="Select Network" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="Celo Testnet">Celo Testnet</SelectItem>
-              <SelectItem value="Rootstock Testnet">Rootstock Testnet (RSK)</SelectItem>
-              <SelectItem value="Saga">Saga</SelectItem>
+              <SelectItem value="Celo Testnet">Celo Testnet (USDC)</SelectItem>
+              <SelectItem value="Rootstock Testnet">Rootstock Testnet (USDC)</SelectItem>
+              <SelectItem value="Saga">Saga (USDC)</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -231,31 +238,42 @@ export function StrategyActionModal({ isOpen, onClose, strategy, action }: Strat
             </AlertDescription>
           </Alert>
         )}
+        
+        {/* Information alert about USDC on Celo */}
+        {selectedChain === ChainId.CELO && (
+          <Alert className="mb-4 bg-background/50">
+            <AlertDescription className="text-xs">
+              <span className="font-medium">Note:</span> USDC on Celo Testnet has 6 decimals. 
+              Your approval will be for the exact amount you're depositing.
+            </AlertDescription>
+          </Alert>
+        )}
 
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Input
-              id="amount"
-              placeholder="0.00"
-              className="col-span-4"
-              value={amount}
-              onChange={handleAmountChange}
-              disabled={isLoading || isSwitchingNetwork}
-              autoFocus
-            />
+            <div className="relative col-span-4">
+              <Input
+                id="amount"
+                placeholder="0.00"
+                className="pr-12"
+                value={amount}
+                onChange={handleAmountChange}
+                disabled={isLoading || isSwitchingNetwork}
+                autoFocus
+              />
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-muted-foreground">
+                USDC
+              </div>
+            </div>
           </div>
           <div className="flex justify-between text-sm text-muted-foreground">
             <span>Strategy:</span>
-            <span>ID:1 Vault</span>
-          </div>
-          <div className="flex justify-between text-sm text-muted-foreground">
-            <span>Network:</span>
-            <span>{CHAIN_ID_TO_NETWORK[selectedChain]}</span>
+            <span>USDC Vault</span>
           </div>
           {action === "withdraw" && strategy.userDeposit > 0 && (
             <div className="flex justify-between text-sm">
               <span>Your position:</span>
-              <span className="font-medium">${strategy.userDeposit.toLocaleString()}</span>
+              <span className="font-medium">{strategy.userDeposit.toLocaleString()} USDC</span>
             </div>
           )}
         </div>
