@@ -28,7 +28,6 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   const [isConnecting, setIsConnecting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Check if the wallet was previously connected
   useEffect(() => {
     const checkConnection = async () => {
       if (typeof window !== "undefined" && window.ethereum) {
@@ -47,16 +46,13 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
     checkConnection()
   }, [])
 
-  // Listen for account changes
   useEffect(() => {
     if (typeof window !== "undefined" && window.ethereum) {
       const handleAccountsChanged = (accounts: string[]) => {
         if (accounts.length === 0) {
-          // User disconnected
           setAddress(null)
           setIsConnected(false)
         } else {
-          // Account changed
           setAddress(accounts[0])
           setIsConnected(true)
         }
@@ -65,7 +61,9 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
       window.ethereum.on("accountsChanged", handleAccountsChanged)
 
       return () => {
-        window.ethereum.removeListener("accountsChanged", handleAccountsChanged)
+        if (window.ethereum) {
+          window.ethereum.removeListener("accountsChanged", handleAccountsChanged)
+        }
       }
     }
   }, [])

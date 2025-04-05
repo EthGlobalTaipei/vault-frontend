@@ -3,8 +3,7 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Header } from "@/components/header"
-import { WalletProvider } from "@/providers/WalletProvider"
-import ClientOnly from "@/components/ClientOnly"
+import { WalletProvider } from "@/hooks/use-wallet"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -22,12 +21,10 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} bg-[#050A1C] text-white min-h-screen`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
-          <ClientOnly>
-            <WalletProvider>
-              <Header />
-              <main className="container mx-auto px-4 py-8">{children}</main>
-            </WalletProvider>
-          </ClientOnly>
+          <WalletProvider>
+            <Header />
+            <main className="container mx-auto px-4 py-8">{children}</main>
+          </WalletProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -25,3 +25,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+providers/WalletProvider.tsx
+hooks/use-wallet.ts
+hooks/use-wallet.ts

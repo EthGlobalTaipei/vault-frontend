@@ -4,7 +4,7 @@ import { useWallet } from "@/hooks/use-wallet"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Wallet, Settings, History, Shield, Loader2 } from "lucide-react"
+import { Wallet, Settings, History, Shield, Loader2, Key } from "lucide-react"
 import "@/app/globals.css"
 
 export default function AccountPage() {
@@ -62,7 +62,7 @@ export default function AccountPage() {
                 <CardTitle>Wallet Information</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-2">
+                <div className="space-y-4">
                   <div className="flex justify-between">
                     <span className="text-gray-400">Address</span>
                     <span className="font-mono">{address}</span>
