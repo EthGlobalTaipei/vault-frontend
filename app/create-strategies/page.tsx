@@ -38,9 +38,9 @@ export default function CreateStrategiesPage() {
             {messages.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center">
                 <Bot size={48} className="text-pink-500 mb-4" />
-                <h2 className="text-xl font-bold mb-2">Strategy Builder Assistant</h2>
+                <h2 className="text-xl font-bold mb-2">Example Prompt</h2>
                 <p className="text-gray-300 max-w-md">
-                  I can help you create custom DeFi strategies, understand yield opportunities, and build optimized investment plans.
+                I want to allocate 70% of my funds to stablecoins and 30% to a secondary token. Invest in Lending Protocol A only if the APY is above 6%. If the APY falls below 6%, keep funds in the vault, and trigger a stop-loss if it drops below 3.5%. Rebalance the portfolio every 24 hours if the allocation deviates by more than 8%, and limit each transaction to a maximum of 12% of the total vault value with a swap slippage tolerance of 1.8%
                 </p>
               </div>
             ) : (
