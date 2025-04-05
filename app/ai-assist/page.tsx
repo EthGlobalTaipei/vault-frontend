@@ -27,7 +27,7 @@ export default function AIAssistPage() {
         <CardContent className="p-6">
           <h1 className="text-2xl font-bold mb-2">AI Assistant</h1>
           <p className="text-gray-300">
-            Ask me anything about DeFi, Yearn, or how to interact with your crypto assets.
+            Ask me anything about DeFi, ChatDeFi, or how to interact with your crypto assets.
           </p>
         </CardContent>
       </Card>
@@ -38,9 +38,9 @@ export default function AIAssistPage() {
             {messages.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center">
                 <Bot size={48} className="text-pink-500 mb-4" />
-                <h2 className="text-xl font-bold mb-2">Welcome to Yearn AI Assistant</h2>
+                <h2 className="text-xl font-bold mb-2">Welcome to ChatDeFi AI Assistant</h2>
                 <p className="text-gray-300 max-w-md">
-                  I can help you navigate DeFi, understand Yearn vaults, and assist with onchain actions.
+                  I can help you navigate DeFi, understand ChatDeFi vaults, and assist with onchain actions.
                 </p>
               </div>
             ) : (
@@ -71,7 +71,7 @@ export default function AIAssistPage() {
               <Input
                 value={input}
                 onChange={handleInputChange}
-                placeholder="Ask about DeFi, Yearn vaults, or crypto..."
+                placeholder="Ask about DeFi, ChatDeFi vaults, or crypto..."
                 className="bg-[#050A1C] border-gray-700 focus:border-pink-500"
                 disabled={isLoading}
               />

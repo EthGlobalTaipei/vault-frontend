@@ -1,15 +1,17 @@
 import type React from "react"
-import { Inter } from "next/font/google"
+import { Inter, Raleway } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Header } from "@/components/header"
 import { WalletProvider } from "@/hooks/use-wallet"
+import { Toaster } from "@/components/ui/toaster"
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
+const raleway = Raleway({ subsets: ["latin"], variable: "--font-raleway" })
 
 export const metadata = {
-  title: "Yearn Clone",
-  description: "A minimalistic Yearn.fi clone with AI assistance",
+  title: "ChatDeFi",
+  description: "A DeFi platform with AI assistance",
 }
 
 export default function RootLayout({
@@ -19,11 +21,19 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className} bg-[#050A1C] text-white min-h-screen`}>
+      <body className={`${inter.variable} ${raleway.variable} font-sans bg-gradient-to-b from-background to-background/95 text-foreground min-h-screen`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           <WalletProvider>
-            <Header />
-            <main className="container mx-auto px-4 py-8">{children}</main>
+            <div className="flex flex-col min-h-screen">
+              <Header />
+              <main className="container mx-auto px-4 py-8 flex-grow">{children}</main>
+              <footer className="border-t border-border/20 py-6 backdrop-blur-sm">
+                <div className="container mx-auto px-4 text-center text-muted-foreground">
+                  <p>© 2023 ChatDeFi. All rights reserved.</p>
+                </div>
+              </footer>
+            </div>
+            <Toaster />
           </WalletProvider>
         </ThemeProvider>
       </body>
