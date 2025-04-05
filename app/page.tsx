@@ -8,7 +8,7 @@ export default function Home() {
       <div className="w-full max-w-5xl mt-16 mb-24 text-center">
         <h1 className="text-5xl font-bold mb-6">THE DEFI WAY TO EARN ON CRYPTO</h1>
         <p className="text-xl text-gray-300 mb-8">
-          Yearn is DeFi&apos;s longest running, most battle tested, and most trusted yield protocol.
+          ChatDeFi is DeFi&apos;s first AI-powered strategy builder and manager.
         </p>
         <div className="flex justify-center">
           <Button asChild className="bg-blue-600 hover:bg-blue-700">
@@ -29,8 +29,10 @@ export default function Home() {
           </p>
         </div>
         <div className="bg-[#0A1029] p-8 rounded-lg border border-gray-800">
-          <h3 className="text-2xl font-bold mb-4">YEARN APPS.</h3>
-          <p className="text-gray-300">Apps built on Yearn strategies by contributors and the wider community!</p>
+          <h3 className="text-2xl font-bold mb-4">AI ASSITED STRATEGIES</h3>
+          <p className="text-gray-300">
+            Our AI assistant helps you find the best strategies for your portfolio.
+          </p>
         </div>
       </div>
     </div>
