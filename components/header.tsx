@@ -47,9 +47,6 @@ export function Header() {
               <Link href="/account" className="text-foreground/80 hover:text-primary transition-colors duration-200 font-medium">
                 Account
               </Link>
-              <Link href="/ai-assist" className="text-foreground/80 hover:text-primary transition-colors duration-200 font-medium">
-                AI Assistant
-              </Link>
             </nav>
           </div>
           
@@ -108,13 +105,6 @@ export function Header() {
               onClick={() => setMobileMenuOpen(false)}
             >
               Account
-            </Link>
-            <Link 
-              href="/ai-assist" 
-              className="text-foreground/80 hover:text-primary transition-colors py-2"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              AI Assistant
             </Link>
             <Button
               onClick={handleConnect}
